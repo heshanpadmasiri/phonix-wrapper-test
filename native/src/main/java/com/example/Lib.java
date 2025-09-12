@@ -31,16 +31,20 @@ public class Lib {
     return handle;
   }
 
-  public static SpanHandle createSpanHandle(Context cx, String kind) {
+  public static SpanHandle createSpanHandle(Context cx, String name, String kind) {
     SpanHandle.Kind spanKind = switch (kind.toLowerCase()) {
       case "llm" -> SpanHandle.Kind.LLM;
       case "tool" -> SpanHandle.Kind.TOOL;
       case "agent" -> SpanHandle.Kind.AGENT;
       default -> throw new IllegalArgumentException("Unknown kind: " + kind);
     };
-    SpanHandle handle = new SpanHandle();
-    handle.init(cx, TRACER, spanKind);
+    SpanHandle handle = new SpanHandle(name, spanKind);
+    handle.init(cx, TRACER);
     return handle;
+  }
+
+  public static void setSpanAttribute(Context cx, SpanHandle handle, String key, String value) {
+    handle.setAttribute(cx, key, value);
   }
 
   public static void enterSpanHandle(Context cx, SpanHandle handle) {
@@ -53,6 +57,10 @@ public class Lib {
 
   public static void setSpanHandleOutput(Context cx, SpanHandle handle, String output) {
     handle.setOutput(cx, output);
+  }
+
+  public static void setSpanHandleStatus(Context cx, SpanHandle handle, String status) {
+    handle.setStatus(cx, SpanHandle.Status.from(status));
   }
 
   public static void exitSpanHandle(Context cx, SpanHandle handle) {

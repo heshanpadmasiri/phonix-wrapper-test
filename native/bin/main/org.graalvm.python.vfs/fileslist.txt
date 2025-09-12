@@ -7,7 +7,6 @@
 /org.graalvm.python.vfs/venv/bin/activate.fish
 /org.graalvm.python.vfs/venv/bin/distro
 /org.graalvm.python.vfs/venv/bin/graalpy
-/org.graalvm.python.vfs/venv/bin/graalpy.sh
 /org.graalvm.python.vfs/venv/bin/httpx
 /org.graalvm.python.vfs/venv/bin/normalizer
 /org.graalvm.python.vfs/venv/bin/openai
@@ -26,8 +25,6 @@
 /org.graalvm.python.vfs/venv/lib/
 /org.graalvm.python.vfs/venv/lib/python3.11/
 /org.graalvm.python.vfs/venv/lib/python3.11/site-packages/
-/org.graalvm.python.vfs/venv/lib/python3.11/site-packages/__pycache__/
-/org.graalvm.python.vfs/venv/lib/python3.11/site-packages/__pycache__/typing_extensions.graalpy242-311.pyc
 /org.graalvm.python.vfs/venv/lib/python3.11/site-packages/_distutils_hack/
 /org.graalvm.python.vfs/venv/lib/python3.11/site-packages/_distutils_hack/__init__.py
 /org.graalvm.python.vfs/venv/lib/python3.11/site-packages/_distutils_hack/__pycache__/
@@ -6004,14 +6001,12 @@
 /org.graalvm.python.vfs/venv/lib/python3.11/site-packages/tqdm/utils.py
 /org.graalvm.python.vfs/venv/lib/python3.11/site-packages/tqdm/version.py
 /org.graalvm.python.vfs/venv/lib/python3.11/site-packages/typing_extensions-4.15.0.dist-info/
-/org.graalvm.python.vfs/venv/lib/python3.11/site-packages/typing_extensions-4.15.0.dist-info/INSTALLER
 /org.graalvm.python.vfs/venv/lib/python3.11/site-packages/typing_extensions-4.15.0.dist-info/METADATA
 /org.graalvm.python.vfs/venv/lib/python3.11/site-packages/typing_extensions-4.15.0.dist-info/RECORD
 /org.graalvm.python.vfs/venv/lib/python3.11/site-packages/typing_extensions-4.15.0.dist-info/WHEEL
 /org.graalvm.python.vfs/venv/lib/python3.11/site-packages/typing_extensions-4.15.0.dist-info/licenses/
 /org.graalvm.python.vfs/venv/lib/python3.11/site-packages/typing_extensions-4.15.0.dist-info/licenses/LICENSE
 /org.graalvm.python.vfs/venv/lib/python3.11/site-packages/typing_extensions.py
-/org.graalvm.python.vfs/venv/lib/python3.11/site-packages/typing_extensions.py.orig
 /org.graalvm.python.vfs/venv/lib/python3.11/site-packages/urllib3-2.5.0.dist-info/
 /org.graalvm.python.vfs/venv/lib/python3.11/site-packages/urllib3-2.5.0.dist-info/INSTALLER
 /org.graalvm.python.vfs/venv/lib/python3.11/site-packages/urllib3-2.5.0.dist-info/METADATA

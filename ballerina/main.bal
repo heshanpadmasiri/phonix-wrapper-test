@@ -7,31 +7,85 @@ public function main() returns error? {
     closeContext(cx);
 }
 
-function execAgent(handle cx) {
-    handle spanHandle = createSpanHandle(cx, java:fromString("agent"));
-    enterSpanHandle(cx, spanHandle);
-    setSpanHandleInput(cx, spanHandle, java:fromString("hi"));
-    execLLM(cx);
+class Span {
+    private final handle cx;
+    private final handle spanHandle;
+    private final string name;
 
-    setSpanHandleOutput(cx, spanHandle, java:fromString("hello"));
-    exitSpanHandle(cx, spanHandle);
+    public isolated function init(handle cx, handle spanHandle, string name) {
+        self.cx = cx;
+        self.spanHandle = spanHandle;
+        self.name = name;
+    }
+
+    public function enter() {
+        enterSpanHandle(self.cx, self.spanHandle);
+    }
+
+    public function setInput(string input) {
+        setSpanHandleInput(self.cx, self.spanHandle, java:fromString(input));
+    }
+
+    public function setOutput(string output) {
+        setSpanHandleOutput(self.cx, self.spanHandle, java:fromString(output));
+    }
+
+    public function setStatus(string status) {
+        setSpanHandleStatus(self.cx, self.spanHandle, java:fromString(status));
+    }
+
+    public function exit() {
+        exitSpanHandle(self.cx, self.spanHandle);
+    }
+
+    public function setAttribute(string key, string value) {
+        setSpanAttribute(self.cx, self.spanHandle, java:fromString(key), java:fromString(value));
+    }
+}
+
+isolated function createAgentSpan(handle cx, string name) returns Span {
+    handle spanHandle = createSpanHandle(cx, java:fromString("agent"), java:fromString("agent"));
+    return new (cx, spanHandle, name);
+}
+
+isolated function createLLMSpan(handle cx, string name) returns Span {
+    handle spanHandle = createSpanHandle(cx, java:fromString(name), java:fromString("llm"));
+    return new (cx, spanHandle, name);
+}
+
+isolated function createToolSpan(handle cx, string name) returns Span {
+    handle spanHandle = createSpanHandle(cx, java:fromString(name), java:fromString("tool"));
+    return new (cx, spanHandle, name);
+}
+
+function execAgent(handle cx) {
+    Span span = createAgentSpan(cx, "my-agent");
+    span.enter();
+    span.setInput("hi");
+    execLLM(cx);
+    execLLM(cx);
+    span.setOutput("hello");
+    span.setStatus("OK");
+    span.exit();
 }
 
 function execLLM(handle cx) {
-    handle spanHandle = createSpanHandle(cx, java:fromString("llm"));
-    enterSpanHandle(cx, spanHandle);
-    setSpanHandleInput(cx, spanHandle, java:fromString("hi llm"));
+    Span span = createLLMSpan(cx, "my-llm");
+    span.enter();
+    span.setInput("hi llm");
     execTool(cx);
-    setSpanHandleOutput(cx, spanHandle, java:fromString("hello llm"));
-    exitSpanHandle(cx, spanHandle);
+    span.setOutput("hello llm");
+    span.setStatus("OK");
+    span.exit();
 }
 
 function execTool(handle cx) {
-    handle spanHandle = createSpanHandle(cx, java:fromString("tool"));
-    enterSpanHandle(cx, spanHandle);
-    setSpanHandleInput(cx, spanHandle, java:fromString("hi tool"));
-    setSpanHandleOutput(cx, spanHandle, java:fromString("hello tool"));
-    exitSpanHandle(cx, spanHandle);
+    Span span = createToolSpan(cx, "my-tool");
+    span.enter();
+    span.setInput("hi tool");
+    span.setOutput("hello tool");
+    span.setStatus("OK");
+    span.exit();
 }
 
 function execLLMCallInPython(handle cx) {
@@ -79,7 +133,7 @@ isolated function execTraceAgent(handle cx) = @java:Method {
     name: "execTraceAgent"
 } external;
 
-isolated function createSpanHandle(handle cx, handle kind) returns handle = @java:Method {
+isolated function createSpanHandle(handle cx, handle name, handle kind) returns handle = @java:Method {
     'class: "com.example.Lib",
     name: "createSpanHandle"
 } external;
@@ -102,4 +156,14 @@ isolated function setSpanHandleOutput(handle cx, handle 'handle, handle output) 
 isolated function exitSpanHandle(handle cx, handle 'handle) = @java:Method {
     'class: "com.example.Lib",
     name: "exitSpanHandle"
+} external;
+
+isolated function setSpanAttribute(handle cx, handle 'handle, handle key, handle value) = @java:Method {
+    'class: "com.example.Lib",
+    name: "setSpanAttribute"
+} external;
+
+isolated function setSpanHandleStatus(handle cx, handle 'handle, handle status) = @java:Method {
+    'class: "com.example.Lib",
+    name: "setSpanHandleStatus"
 } external;
