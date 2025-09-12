@@ -31,14 +31,20 @@ public class Lib {
     return handle;
   }
 
-  public static SpanHandle createSpanHandle(Context cx, String name, String kind) {
-    SpanHandle.Kind spanKind = switch (kind.toLowerCase()) {
-      case "llm" -> SpanHandle.Kind.LLM;
-      case "tool" -> SpanHandle.Kind.TOOL;
-      case "agent" -> SpanHandle.Kind.AGENT;
-      default -> throw new IllegalArgumentException("Unknown kind: " + kind);
-    };
-    SpanHandle handle = new SpanHandle(name, spanKind);
+  public static LLMSpanHandle createLLMSpanHandle(Context cx, String name, String modelName, String providerName) {
+    LLMSpanHandle handle = new LLMSpanHandle(name, modelName, providerName);
+    handle.init(cx, TRACER);
+    return handle;
+  }
+
+  public static ToolSpanHandle createToolSpanHandle(Context cx, String name) {
+    ToolSpanHandle handle = new ToolSpanHandle(name);
+    handle.init(cx, TRACER);
+    return handle;
+  }
+
+  public static AgentSpanHandle createAgentSpanHandle(Context cx, String name) {
+    AgentSpanHandle handle = new AgentSpanHandle(name);
     handle.init(cx, TRACER);
     return handle;
   }

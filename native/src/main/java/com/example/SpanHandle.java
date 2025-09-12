@@ -2,11 +2,19 @@ package com.example;
 
 import org.graalvm.polyglot.Context;
 
-public record SpanHandle(int id, String name, Kind kind) {
+public abstract class SpanHandle {
   private static int nextSpanHandleId = 0;
+  
+  protected final int id;
+  protected final String name;
 
-  public SpanHandle(String name, Kind kind) {
-    this(nextSpanHandleId++, name, kind);
+  public SpanHandle(int id, String name) {
+    this.id = id;
+    this.name = name;
+  }
+
+  public SpanHandle(String name) {
+    this(nextSpanHandleId++, name);
   }
 
   public String spanContextVar() {
@@ -17,17 +25,7 @@ public record SpanHandle(int id, String name, Kind kind) {
     return "span_" + id;
   }
 
-  public void init(Context cx, String traceVar) {
-    String code = """
-        from opentelemetry import trace
-        from openinference.semconv.trace import SpanAttributes
-        %s = %s.start_as_current_span(
-                "%s",
-            attributes={SpanAttributes.OPENINFERENCE_SPAN_KIND: "%s"}
-        )
-        """.formatted(spanContextVar(), traceVar, name, kind.kind(), kind.kind());
-    cx.eval("python", code);
-  }
+  public abstract void init(Context cx, String traceVar);
 
   public void enter(Context cx) {
     String code = """
@@ -42,6 +40,7 @@ public record SpanHandle(int id, String name, Kind kind) {
         """.formatted(spanVar(), key, value);
     cx.eval("python", code);
   }
+
 
   public void setInput(Context cx, String input) {
     setAttribute(cx, "input.value", input);
@@ -68,28 +67,6 @@ public record SpanHandle(int id, String name, Kind kind) {
     cx.eval("python", code);
   }
 
-  public enum Kind {
-    LLM,
-    TOOL,
-    AGENT;
-
-    public String toString() {
-      return switch (this) {
-        case LLM -> "llm";
-        case TOOL -> "tool";
-        case AGENT -> "agent";
-      };
-    }
-
-    public String kind() {
-      return switch (this) {
-        case LLM -> "LLM";
-        case TOOL -> "TOOL";
-        case AGENT -> "AGENT";
-      };
-    }
-  }
-
   public enum Status {
     OK,
     ERROR;
@@ -109,5 +86,4 @@ public record SpanHandle(int id, String name, Kind kind) {
       };
     }
   }
-
 }

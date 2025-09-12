@@ -44,17 +44,17 @@ class Span {
 }
 
 isolated function createAgentSpan(handle cx, string name) returns Span {
-    handle spanHandle = createSpanHandle(cx, java:fromString("agent"), java:fromString("agent"));
+    handle spanHandle = createAgentSpanHandle(cx, java:fromString(name));
     return new (cx, spanHandle, name);
 }
 
-isolated function createLLMSpan(handle cx, string name) returns Span {
-    handle spanHandle = createSpanHandle(cx, java:fromString(name), java:fromString("llm"));
+isolated function createLLMSpan(handle cx, string name, string modelName, string providerName) returns Span {
+    handle spanHandle = createLLMSpanHandle(cx, java:fromString(name), java:fromString(modelName), java:fromString(providerName));
     return new (cx, spanHandle, name);
 }
 
 isolated function createToolSpan(handle cx, string name) returns Span {
-    handle spanHandle = createSpanHandle(cx, java:fromString(name), java:fromString("tool"));
+    handle spanHandle = createToolSpanHandle(cx, java:fromString(name));
     return new (cx, spanHandle, name);
 }
 
@@ -70,7 +70,7 @@ function execAgent(handle cx) {
 }
 
 function execLLM(handle cx) {
-    Span span = createLLMSpan(cx, "my-llm");
+    Span span = createLLMSpan(cx, "my-llm", "gpt-4o", "openai");
     span.enter();
     span.setInput("hi llm");
     execTool(cx);
@@ -133,9 +133,19 @@ isolated function execTraceAgent(handle cx) = @java:Method {
     name: "execTraceAgent"
 } external;
 
-isolated function createSpanHandle(handle cx, handle name, handle kind) returns handle = @java:Method {
+isolated function createLLMSpanHandle(handle cx, handle name, handle modelName, handle providerName) returns handle = @java:Method {
     'class: "com.example.Lib",
-    name: "createSpanHandle"
+    name: "createLLMSpanHandle"
+} external;
+
+isolated function createToolSpanHandle(handle cx, handle name) returns handle = @java:Method {
+    'class: "com.example.Lib",
+    name: "createToolSpanHandle"
+} external;
+
+isolated function createAgentSpanHandle(handle cx, handle name) returns handle = @java:Method {
+    'class: "com.example.Lib",
+    name: "createAgentSpanHandle"
 } external;
 
 isolated function enterSpanHandle(handle cx, handle 'handle) = @java:Method {
