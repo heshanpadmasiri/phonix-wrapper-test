@@ -1,0 +1,24 @@
+[package]
+org = "heshanp"
+name = "phonix_wrapper"
+version = "0.1.0"
+distribution = "2201.12.8"
+
+[build-options]
+observabilityIncluded = true
+
+[platform.java21]
+graalvmCompatible = true
+
+[[platform.java21.dependency]]
+groupId = "com.example"
+artifactId = "graalpy-phonix-wrapper"
+version = "0.1.0"
+path = "./lib/native.jar"
+
+[[platform.java21.dependency]]
+groupId = "org.graalvm.polyglot"
+artifactId = "polyglot"
+version = "24.2.2"
+path = "./target/platform-libs/org/graalvm/polyglot/polyglot/24.2.2/polyglot-24.2.2.jar"
+
