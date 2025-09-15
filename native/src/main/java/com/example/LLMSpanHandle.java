@@ -48,4 +48,10 @@ public class LLMSpanHandle extends SpanHandle {
     setAttribute(cx, "llm.output_messages.0.message.role", "assistant");
     setAttribute(cx, "llm.output_messages.0.message.content", output);
   }
+
+  public void setTokenCount(Context cx, int total, int prompt, int completion) {
+    setAttribute(cx, "llm.token_count.total", total);
+    setAttribute(cx, "llm.token_count.prompt", prompt);
+    setAttribute(cx, "llm.token_count.completion", completion);
+  }
 }

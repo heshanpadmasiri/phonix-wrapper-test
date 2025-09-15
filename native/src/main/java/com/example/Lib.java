@@ -69,6 +69,10 @@ public class Lib {
     handle.setStatus(cx, SpanHandle.Status.from(status));
   }
 
+  public static void setLLMSpanTokenCount(Context cx, LLMSpanHandle handle, int total, int prompt, int completion) {
+    handle.setTokenCount(cx, total, prompt, completion);
+  }
+
   public static void exitSpanHandle(Context cx, SpanHandle handle) {
     handle.exit(cx);
   }

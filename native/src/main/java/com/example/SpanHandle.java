@@ -4,7 +4,7 @@ import org.graalvm.polyglot.Context;
 
 public abstract class SpanHandle {
   private static int nextSpanHandleId = 0;
-  
+
   protected final int id;
   protected final String name;
 
@@ -41,6 +41,12 @@ public abstract class SpanHandle {
     cx.eval("python", code);
   }
 
+  public void setAttribute(Context cx, String key, int value) {
+    String code = """
+        %s.set_attribute("%s", %s)
+        """.formatted(spanVar(), key, value);
+    cx.eval("python", code);
+  }
 
   public void setInput(Context cx, String input) {
     setAttribute(cx, "input.value", input);

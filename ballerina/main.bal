@@ -41,6 +41,10 @@ class Span {
     public function setAttribute(string key, string value) {
         setSpanAttribute(self.cx, self.spanHandle, java:fromString(key), java:fromString(value));
     }
+
+    public function setTokenCount(int total, int prompt, int completion) {
+        setLLMSpanTokenCount(self.cx, self.spanHandle, total, prompt, completion);
+    }
 }
 
 isolated function createAgentSpan(handle cx, string name) returns Span {
@@ -70,12 +74,13 @@ function execAgent(handle cx) {
 }
 
 function execLLM(handle cx) {
-    Span span = createLLMSpan(cx, "my-llm", "gpt-4o", "openai");
+    Span span = createLLMSpan(cx, "my-llm", "chatgpt-4o-latest", "openai");
     span.enter();
     span.setInput("hi llm");
     execTool(cx);
     span.setOutput("hello llm");
     span.setStatus("OK");
+    span.setTokenCount(100, 50, 50);
     span.exit();
 }
 
@@ -156,6 +161,11 @@ isolated function enterSpanHandle(handle cx, handle 'handle) = @java:Method {
 isolated function setSpanHandleInput(handle cx, handle 'handle, handle input) = @java:Method {
     'class: "com.example.Lib",
     name: "setSpanHandleInput"
+} external;
+
+isolated function setLLMSpanTokenCount(handle cx, handle 'handle, int total, int prompt, int completion) = @java:Method {
+    'class: "com.example.Lib",
+    name: "setLLMSpanTokenCount"
 } external;
 
 isolated function setSpanHandleOutput(handle cx, handle 'handle, handle output) = @java:Method {
